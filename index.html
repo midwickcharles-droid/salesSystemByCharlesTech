@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Zed Distributors Limited - Stock Management System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 12px;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Business Card */
+        .business-card {
+            background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .business-name {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .business-tagline {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .business-address {
+            font-size: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .business-phone {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+        }
+
+        /* Date Bar */
+        .date-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .date-label {
+            font-weight: 600;
+            color: #1a472a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .date-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .date-input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .btn-sm {
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            color: #1a472a;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2d6a4f;
+            display: inline-block;
+        }
+
+        /* Product Items */
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 14px;
+            width: 35%;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 12px;
+            font-weight: bold;
+            width: 20%;
+        }
+
+        .price-bottle {
+            color: #2d6a4f;
+        }
+
+        .price-case {
+            color: #e67e22;
+        }
+
+        .product-input {
+            width: 40%;
+        }
+
+        .product-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .unit-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 5px;
+            display: inline-block;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 4px;
+        }
+
+        .btn-primary { background: #2d6a4f; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-info { background: #3498db; color: white; }
+        .btn-purple { background: #9b59b6; color: white; }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        /* Results */
+        .results-panel {
+            background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .sold-table {
+            width: 100%;
+            background: white;
+            color: #333;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        .sold-table th {
+            background: #1a472a;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .sold-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cash-section {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .cash-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .cash-input-group input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .difference {
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .difference.perfect { background: #d5f4e6; color: #27ae60; }
+        .difference.surplus { background: #fff3cd; color: #856404; }
+        .difference.shortage { background: #f8d7da; color: #721c24; }
+
+        .records-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border-left: 4px solid #2d6a4f;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .alert {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            display: none;
+            z-index: 1000;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .alert-success { background: #27ae60; color: white; }
+        .alert-danger { background: #e74c3c; color: white; }
+
+        /* PDF专用样式 - 确保打印时正常显示 */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .btn, .btn-group, .date-bar, .alert, .card:not(#pdf-content .results-panel) {
+                display: none !important;
+            }
+            .results-panel {
+                background: #27ae60 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .sold-table {
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-name { width: 100%; margin-bottom: 5px; }
+            .product-price { width: auto; }
+            .product-input { width: 100%; margin-top: 5px; }
+            .product-item { flex-direction: column; align-items: flex-start; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Business Header -->
+        <div class="business-card">
+            <div class="business-name">🏪 ZED DISTRIBUTORS LIMITED</div>
+            <div class="business-tagline">Dealers in Soda, Beers, Spirits, Water & More</div>
+            <div class="business-address">📍 NAMUGONGO - SONDE</div>
+            <div class="business-phone">📞 FREE DELIVERY: 0709 269 392</div>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <!-- Date Selector -->
+        <div class="date-bar">
+            <div class="date-label">📅 SELECT DATE</div>
+            <div class="date-input-group">
+                <input type="date" id="selectedDate">
+                <button class="btn btn-primary btn-sm" onclick="loadDateData()">Load</button>
+                <button class="btn btn-info btn-sm" onclick="goToToday()">Today</button>
+            </div>
+        </div>
+
+        <!-- Morning Stock -->
+        <div class="card">
+            <h2>🌅 MORNING STOCK</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">🍾 Bottles | 📦 Soda in Cases (1 Case = 24 Bottles)</p>
+            <div id="morning-stock-list"></div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="saveMorningStock()">💾 Save Morning Stock</button>
+                <button class="btn btn-warning" onclick="copyPreviousDayStock()">📋 Copy Yesterday</button>
+            </div>
+        </div>
+
+        <!-- Closing Stock -->
+        <div class="card">
+            <h2>🌙 CLOSING STOCK</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Enter remaining stock after sales</p>
+            <div id="current-stock-list"></div>
+            <button class="btn btn-success" onclick="saveCurrentStock()">💾 Save Closing Stock</button>
+        </div>
+
+        <!-- Next Day Stock -->
+        <div class="card">
+            <h2>📆 NEXT DAY'S OPENING STOCK</h2>
+            <div id="next-stock-list"></div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="saveNextMorningStock()">💾 Save</button>
+                <button class="btn btn-primary" onclick="setNextDayFromCurrent()">🔄 Set from Closing</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="calculateSales()" style="font-size: 16px; padding: 14px 20px;">🧮 CALCULATE SALES</button>
+        </div>
+
+        <!-- Results & PDF Area - This is what gets exported -->
+        <div id="pdf-export-area" style="background: white; border-radius: 16px; overflow: hidden;">
+            <div id="results" class="results-panel" style="display: none;">
+                <div style="background: white; color: #333; padding: 5px 15px; margin-bottom: 15px; border-radius: 10px;">
+                    <small style="color: #666;">ZED DISTRIBUTORS LIMITED - OFFICIAL REPORT</small>
+                </div>
+                <h3>📊 SALES REPORT</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>🍾 Total Bottles Sold</h4>
+                        <div class="value" id="total-bottles-sold">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>📦 Soda Cases Sold</h4>
+                        <div class="value" id="total-cases-sold">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>💰 Total Cash (UGX)</h4>
+                        <div class="value" id="expected-cash">0</div>
+                    </div>
+                </div>
+
+                <h3>📋 Sold Items Details</h3>
+                <div style="overflow-x: auto;">
+                    <table class="sold-table" id="sold-details">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Sold</th>
+                                <th>Unit</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sold-details-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="cash-section">
+                    <h3>💰 Cash Reconciliation</h3>
+                    <div class="cash-input-group">
+                        <input type="number" id="actual-cash" placeholder="Enter actual cash received (UGX)">
+                        <button class="btn btn-warning" onclick="compareCash()">Compare</button>
+                    </div>
+                    <div id="cash-difference"></div>
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center; font-size: 10px; opacity: 0.8;">
+                    Generated on: <span id="report-timestamp"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export & Save -->
+        <div class="btn-group">
+            <button class="btn btn-purple" onclick="exportToPDF()">📄 EXPORT TO PDF</button>
+            <button class="btn btn-success" onclick="saveDailyRecord()">💾 Save Record</button>
+        </div>
+
+        <!-- Daily Records -->
+        <div class="card">
+            <h2>📜 SAVED RECORDS</h2>
+            <div class="btn-group">
+                <button class="btn btn-info" onclick="viewDailyRecords()">View Records</button>
+                <button class="btn btn-danger" onclick="clearAllRecords()">Clear All</button>
+            </div>
+            <div id="daily-records" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { name: "Nile", price: 3500, unit: "bottle" },
+            { name: "Bell", price: 2800, unit: "bottle" },
+            { name: "Guiness Staut", price: 3000, unit: "bottle" },
+            { name: "Club", price: 3000, unit: "bottle" },
+            { name: "Eagle", price: 2500, unit: "bottle" },
+            { name: "Guiness Smooth", price: 3000, unit: "bottle" },
+            { name: "Tusker Lite", price: 3000, unit: "bottle" },
+            { name: "Tusker Malt", price: 3000, unit: "bottle" },
+            { name: "Tusker Larger", price: 3000, unit: "bottle" },
+            { name: "Smirnoff", price: 3500, unit: "bottle" },
+            { name: "Pilsner", price: 2800, unit: "bottle" },
+            { name: "Soda Crate", price: 20000, unit: "case" },
+            { name: "Rwenzori Water", price: 17500, unit: "bottle" },
+            { name: "Senetor", price: 2400, unit: "bottle" },
+            { name: "Castle Lite", price: 2500, unit: "bottle" }
+        ];
+
+        let morningStock = {};
+        let nextMorningStock = {};
+        let currentStock = {};
+        let currentDate = new Date().toISOString().split('T')[0];
+
+        function loadData() {
+            const savedMorning = localStorage.getItem(`morningStock_${currentDate}`);
+            morningStock = savedMorning ? JSON.parse(savedMorning) : {};
+            
+            const savedNext = localStorage.getItem(`nextMorningStock_${currentDate}`);
+            nextMorningStock = savedNext ? JSON.parse(savedNext) : {};
+            
+            const savedCurrent = localStorage.getItem(`currentStock_${currentDate}`);
+            currentStock = savedCurrent ? JSON.parse(savedCurrent) : {};
+            
+            renderMorningStock();
+            renderNextStock();
+            renderCurrentStock();
+        }
+
+        function getUnitBadge(product) {
+            if (product.unit === "case") {
+                return `<span class="unit-badge" style="background:#fef3e2; color:#e67e22;">📦 Cases</span>`;
+            }
+            return `<span class="unit-badge" style="background:#e8f5e9; color:#2d6a4f;">🍾 Bottles</span>`;
+        }
+
+        function renderMorningStock() {
+            let html = '';
+            products.forEach(product => {
+                const value = morningStock[product.name] || '';
+                html += `
+                    <div class="product-item">
+                        <div class="product-name">${product.name} ${getUnitBadge(product)}</div>
+                        <div class="product-price ${product.unit === 'case' ? 'price-case' : 'price-bottle'}">${product.price.toLocaleString()} UGX</div>
+                        <div class="product-input">
+                            <input type="number" id="morning-${product.name.replace(/\s/g, '')}" value="${value}" placeholder="${product.unit === 'case' ? 'Cases' : 'Bottles'}" min="0" step="1">
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('morning-stock-list').innerHTML = html;
+        }
+
+        function renderCurrentStock() {
+            let html = '';
+            products.forEach(product => {
+                const value = currentStock[product.name] || '';
+                html += `
+                    <div class="product-item">
+                        <div class="product-name">${product.name} ${getUnitBadge(product)}</div>
+                        <div class="product-price ${product.unit === 'case' ? 'price-case' : 'price-bottle'}">${product.price.toLocaleString()} UGX</div>
+                        <div class="product-input">
+                            <input type="number" id="current-${product.name.replace(/\s/g, '')}" value="${value}" placeholder="${product.unit === 'case' ? 'Cases' : 'Bottles'}" min="0" step="1">
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('current-stock-list').innerHTML = html;
+        }
+
+        function renderNextStock() {
+            let html = '';
+            products.forEach(product => {
+                const value = nextMorningStock[product.name] || '';
+                html += `
+                    <div class="product-item">
+                        <div class="product-name">${product.name} ${getUnitBadge(product)}</div>
+                        <div class="product-price ${product.unit === 'case' ? 'price-case' : 'price-bottle'}">${product.price.toLocaleString()} UGX</div>
+                        <div class="product-input">
+                            <input type="number" id="next-${product.name.replace(/\s/g, '')}" value="${value}" placeholder="${product.unit === 'case' ? 'Cases' : 'Bottles'}" min="0" step="1">
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('next-stock-list').innerHTML = html;
+        }
+
+        function saveMorningStock() {
+            products.forEach(product => {
+                const input = document.getElementById(`morning-${product.name.replace(/\s/g, '')}`);
+                if (input && input.value !== '') {
+                    morningStock[product.name] = parseInt(input.value) || 0;
+                }
+            });
+            localStorage.setItem(`morningStock_${currentDate}`, JSON.stringify(morningStock));
+            showAlert('Morning stock saved!', 'success');
+        }
+
+        function saveCurrentStock() {
+            products.forEach(product => {
+                const input = document.getElementById(`current-${product.name.replace(/\s/g, '')}`);
+                if (input && input.value !== '') {
+                    currentStock[product.name] = parseInt(input.value) || 0;
+                }
+            });
+            localStorage.setItem(`currentStock_${currentDate}`, JSON.stringify(currentStock));
+            showAlert('Closing stock saved!', 'success');
+        }
+
+        function saveNextMorningStock() {
+            products.forEach(product => {
+                const input = document.getElementById(`next-${product.name.replace(/\s/g, '')}`);
+                if (input && input.value !== '') {
+                    nextMorningStock[product.name] = parseInt(input.value) || 0;
+                }
+            });
+            localStorage.setItem(`nextMorningStock_${currentDate}`, JSON.stringify(nextMorningStock));
+            showAlert('Next day stock saved!', 'success');
+        }
+
+        function setNextDayFromCurrent() {
+            if (confirm('Set next day\'s stock from today\'s closing stock?')) {
+                nextMorningStock = { ...currentStock };
+                renderNextStock();
+                saveNextMorningStock();
+                showAlert('Next day stock set from closing!', 'success');
+            }
+        }
+
+        function copyPreviousDayStock() {
+            const yesterday = new Date(currentDate);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            const prevMorning = localStorage.getItem(`morningStock_${yesterdayStr}`);
+            
+            if (prevMorning) {
+                morningStock = JSON.parse(prevMorning);
+                renderMorningStock();
+                saveMorningStock();
+                showAlert(`Copied from ${yesterdayStr}!`, 'success');
+            } else {
+                showAlert(`No data found for ${yesterdayStr}`, 'danger');
+            }
+        }
+
+        function calculateSales() {
+            let totalBottles = 0;
+            let totalCases = 0;
+            let totalCash = 0;
+            let soldDetails = [];
+
+            products.forEach(product => {
+                const morning = morningStock[product.name] || 0;
+                const closing = currentStock[product.name] || 0;
+                const soldQty = morning - closing;
+                
+                if (soldQty > 0) {
+                    const amount = soldQty * product.price;
+                    totalCash += amount;
+                    
+                    if (product.unit === "case") {
+                        totalCases += soldQty;
+                        soldDetails.push({
+                            name: product.name,
+                            sold: soldQty,
+                            unit: "📦 Cases",
+                            amount: amount
+                        });
+                    } else {
+                        totalBottles += soldQty;
+                        soldDetails.push({
+                            name: product.name,
+                            sold: soldQty,
+                            unit: "🍾 Bottles",
+                            amount: amount
+                        });
+                    }
+                }
+            });
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('total-bottles-sold').innerHTML = `${totalBottles}`;
+            document.getElementById('total-cases-sold').innerHTML = `${totalCases}`;
+            document.getElementById('expected-cash').innerHTML = `${totalCash.toLocaleString()} UGX`;
+            document.getElementById('report-timestamp').innerHTML = new Date().toLocaleString();
+            
+            const tbody = document.getElementById('sold-details-body');
+            tbody.innerHTML = '';
+            if (soldDetails.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No sales recorded</td></tr>';
+            } else {
+                soldDetails.forEach(d => {
+                    tbody.innerHTML += `<tr>
+                        <td>${d.name}</td>
+                        <td><strong>${d.sold}</strong></td>
+                        <td>${d.unit}</td>
+                        <td>${d.amount.toLocaleString()} UGX</td>
+                    </tr>`;
+                });
+            }
+
+            window.lastExpectedTotal = totalCash;
+            window.lastTotalBottles = totalBottles;
+            window.lastTotalCases = totalCases;
+            showAlert(`✅ Sold: ${totalBottles} bottles, ${totalCases} cases, ${totalCash.toLocaleString()} UGX`, 'success');
+        }
+
+        function compareCash() {
+            const actual = parseFloat(document.getElementById('actual-cash').value) || 0;
+            const expected = window.lastExpectedTotal || 0;
+            const diff = actual - expected;
+            const diffDiv = document.getElementById('cash-difference');
+            
+            if (diff === 0) diffDiv.innerHTML = '<div class="difference perfect">✅ PERFECT! Cash matches exactly.</div>';
+            else if (diff > 0) diffDiv.innerHTML = `<div class="difference surplus">💰 SURPLUS: ${diff.toLocaleString()} UGX extra</div>`;
+            else diffDiv.innerHTML = `<div class="difference shortage">⚠️ SHORTAGE: ${Math.abs(diff).toLocaleString()} UGX missing</div>`;
+        }
+
+        function saveDailyRecord() {
+            const record = {
+                date: currentDate,
+                morningStock: { ...morningStock },
+                currentStock: { ...currentStock },
+                totalBottles: window.lastTotalBottles || 0,
+                totalCases: window.lastTotalCases || 0,
+                expectedCash: window.lastExpectedTotal || 0,
+                timestamp: new Date().toISOString()
+            };
+            let records = JSON.parse(localStorage.getItem('dailyRecords')) || [];
+            const idx = records.findIndex(r => r.date === currentDate);
+            if (idx >= 0) records[idx] = record;
+            else records.push(record);
+            localStorage.setItem('dailyRecords', JSON.stringify(records));
+            showAlert(`Record saved for ${currentDate}!`, 'success');
+        }
+
+        function viewDailyRecords() {
+            const records = JSON.parse(localStorage.getItem('dailyRecords')) || [];
+            const container = document.getElementById('daily-records');
+            if (records.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:20px;">No records found</p>';
+                return;
+            }
+            let html = '<div class="records-list">';
+            records.slice().reverse().forEach(record => {
+                html += `<div class="record-item" onclick="loadRecordDate('${record.date}')">
+                    <strong>📅 ${record.date}</strong><br>
+                    🍾 ${record.totalBottles || 0} bottles | 📦 ${record.totalCases || 0} cases | 💰 ${(record.expectedCash || 0).toLocaleString()} UGX
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function loadRecordDate(date) {
+            document.getElementById('selectedDate').value = date;
+            loadDateData();
+            showAlert(`Loaded ${date}`, 'success');
+        }
+
+        function clearAllRecords() {
+            if (confirm('Delete ALL saved records?')) {
+                localStorage.removeItem('dailyRecords');
+                viewDailyRecords();
+                showAlert('All records deleted', 'success');
+            }
+        }
+
+        function loadDateData() {
+            currentDate = document.getElementById('selectedDate').value || new Date().toISOString().split('T')[0];
+            loadData();
+        }
+
+        function goToToday() {
+            currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('selectedDate').value = currentDate;
+            loadData();
+            showAlert('Today\'s data loaded', 'success');
+        }
+
+        function exportToPDF() {
+            const resultsDiv = document.getElementById('results');
+            if (resultsDiv.style.display === 'none') {
+                showAlert('Please calculate sales first!', 'danger');
+                return;
+            }
+            
+            // Get the element to export
+            const element = document.getElementById('pdf-export-area');
+            
+            // Show loading message
+            showAlert('Generating PDF... Please wait.', 'success');
+            
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: `ZED_${currentDate}_report.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+            
+            // Call html2pdf
+            html2pdf().set(opt).from(element).save().then(() => {
+                showAlert('PDF exported successfully! Check downloads folder.', 'success');
+            }).catch(err => {
+                console.error('PDF error:', err);
+                showAlert('PDF generation failed. Please try again.', 'danger');
+            });
+        }
+
+        function showAlert(msg, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = msg;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, 3000);
+        }
+
+        document.getElementById('selectedDate').value = currentDate;
+        loadData();
+    </script>
+</body>
+</html>
